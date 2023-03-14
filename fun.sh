@@ -19,17 +19,17 @@ function update_email
 {
    ID=${1}
    EMAIL=${2}
-   OLDDATA=$(grep "${ID}:" customer.db )
+   OLDDATA=$(grep "${ID}" customer.db )
    OLDMAIL=$(echo "${OLDDATA}" | awk 'BEGIN {FS=":"} {print $3}')
-   sed -i 's/${OLDMAIL}/${EMAIL}/' customer.db
+   sed -i "+s/${OLDMAIL}/${EMAIL}/" customer.db
 }
 
 ####function delete record
 function delete_record
 {
   ID=${1}
-  DATA=$(grep "${ID}:" customer.db)
-  sed -i 's/${DATA}//g' customer.db
+  DATA=$(grep "${ID}" customer.db)
+  sed -i "s/${DATA}//" customer.db
 }
 #########insert data in data dase
 function insert
