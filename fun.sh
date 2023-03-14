@@ -7,7 +7,7 @@ PASS_BD="123"
 ## Function, takes customer name, and prints out the id, name, and email. Returns 0 if found, otherwise return 1
 function queryCustomer {
         local CUSTNAME=${1}
-        LINE=$(grep  "${CUSTNAME}" customer.db)
+        LINE=$(grep  "${CUSTNAME}:" customer.db)
         [ -z  "${LINE}" ] && echo "Sorry, ${CUSTNAME} is not found" && return 7
         echo "Information for the customer"
         echo -e "\t ${LINE}"
@@ -19,7 +19,7 @@ function update_email
 {
    ID=${1}
    EMAIL=${2}
-   OLDDATA=$(grep "${ID}" customer.db )
+   OLDDATA=$(grep "${ID}:" customer.db )
    OLDMAIL=$(echo "${OLDDATA}" | awk 'BEGIN {FS=":"} {print $3}')
    sed -i 's/${OLDMAIL}/${EMAIL}/' customer.db
 }
@@ -28,7 +28,7 @@ function update_email
 function delete_record
 {
   ID=${1}
-  DATA=$(grep "${ID}" customer.db)
+  DATA=$(grep "${ID}:" customer.db)
   sed -i 's/${DATA}//g' customer.db
 }
 #########insert data in data dase
@@ -43,7 +43,7 @@ function insert
                                       id "${CUSTID}"
                                       if [ ${?}  -eq  0 ]
                                          then
-                                                ID_FIND=$(grep -c  "${CUSTID}"  customer.db)
+                                                ID_FIND=$(grep -c  "${CUSTID}:"  customer.db)
                                                 if [  ${ID_FIND} -ne 0  ]
                                                      then
                                                            echo " ERROR: this id already exit "
@@ -114,13 +114,13 @@ function update
                                       id "${CUSTID}"
                                       if [ ${?}  -eq  0 ]
                                          then
-                                                ID_FIND=$(grep -c  "${CUSTID}"  customer.db)
+                                                ID_FIND=$(grep -c  "${CUSTID}:"  customer.db)
                                                 if [  ${ID_FIND} -gt 0  ]
                                                     then
                                                            echo " this id already exit "
                                                            echo " your data "
                                                               ####### print details
-                                                           echo "$(grep ${CUSTID} customer.db | awk 'BEGIN {FS=":"} {print "this your data ""   " "your id " $1 "   "  "your name""  " $2 "   "  "your email""  "$3  }')"
+                                                           echo "$(grep "${CUSTID}:" customer.db | awk 'BEGIN {FS=":"} {print "this your data ""   " "your id " $1 "   "  "your name""  " $2 "   "  "your email""  "$3  }')"
                                                            CONT4=0
                                                     else
                                                           echo " your id is not defind"
@@ -167,7 +167,7 @@ function update
 
                                         if [ "${YES}" == "yes" ]
                                             then
-                                               update_email "${CUSTID}" "${CUSTEMAIL}"
+                                               update_email "${CUSTID}:" "${CUSTEMAIL}"
                                                mysql -u ${USER_BD} -p${PASS_BD} -e "update BD.customer  set email='${CUSTEMAIL}' where id=${CUSTID};"
 
                                                echo " your data update and save"
@@ -187,13 +187,13 @@ function delete
                                       id "${CUSTID}"
                                       if [ ${?}  -eq  0 ]
                                          then
-                                                ID_FIND=$(grep -c  "${CUSTID}"  customer.db)
+                                                ID_FIND=$(grep -c  "${CUSTID}:"  customer.db)
                                                 if [  ${ID_FIND} -gt 0  ]
                                                     then
                                                            echo " this id already exit "
                                                            echo " your data "
                                                               ####### print details
-                                                           echo "$(grep ${CUSTID} customer.db | awk 'BEGIN {FS=":"} {print "this your data ""   " "your id " $1 "   "  "your name""  " $2 "   "  "your email""  "$3 }')"
+                                                           echo "$(grep "${CUSTID}:" customer.db | awk 'BEGIN {FS=":"} {print "this your data ""   " "your id " $1 "   "  "your name""  " $2 "   "  "your email""  "$3 }')"
                                                            CONT6=0
                                                     else
                                                           echo " your id is not defind"
@@ -212,7 +212,7 @@ function delete
                                 if [ "${YES}"  == "yes" ]
                                     then
                                         # yes: Delete permanently
-                                        delete_record "${CUSTID}"
+                                        delete_record "${CUSTID}:"
                                         mysql -u ${USER_BD} -p${PASS_BD} -e "delete from BD.customer where id=${CUSTID};"
                                         echo " your recored delete"
                                 fi
